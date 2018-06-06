@@ -1,0 +1,22 @@
+{
+  "configs": [
+    "subscribeFromQueue.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "subscribemessage",
+  "minMuleVersion": "4.1.1",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedResources": [
+        "log4j2.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}

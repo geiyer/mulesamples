@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="9bbc1be3-421e-44c4-bfc7-b4ee3aed6aac" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="473aeab2-3cc0-49d6-8d1b-81a1404937b6" >
+		<jms:active-mq-connection username="admin" password="admin" >
+			<jms:caching-strategy >
+				<jms:default-caching />
+			</jms:caching-strategy>
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+		<jms:consumer-config >
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:consumer-config>
+	</jms:config>
+	<flow name="publishmessageFlow" doc:id="68ac3050-941b-4573-9f01-f223273cbea3" >
+		<http:listener doc:name="Listener" doc:id="48efcd1a-cba2-4be5-99bb-76de8312af60" config-ref="HTTP_Listener_config" path="publish"/>
+		<jms:publish doc:name="Publish" doc:id="39135cd2-f5b5-4562-9793-5beeff9dca27" config-ref="JMS_Config" destination="docupaceevents" destinationType="TOPIC"/>
+		<set-payload value="Your Mule message has been published to ActiveMQ docupaceevents!!" doc:name="Set Payload" doc:id="6b637892-8812-46bd-b81e-4a7e5e9bf3cb" />
+	</flow>
+</mule>

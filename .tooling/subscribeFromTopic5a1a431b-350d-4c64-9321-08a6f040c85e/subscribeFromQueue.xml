@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="0b638ef4-3cec-473d-97b4-ee91a907151b" >
+		<jms:active-mq-connection username="admin" password="admin" clientId="234A" >
+			<jms:caching-strategy >
+				<jms:default-caching />
+			</jms:caching-strategy>
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+		<jms:consumer-config >
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:consumer-config>
+	</jms:config>
+	<flow name="subscribemessageFlow" doc:id="5d9444d6-1ac5-4c8d-a490-e12524a07718" >
+		<jms:listener doc:name="Listener" doc:id="abdaa778-4ed9-4a8d-ab19-73d8d485b426" config-ref="JMS_Config" destination="docupaceevents" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:topic-consumer subscriptionName="ALIPa" durable="true"/>
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="deda8af4-4621-467f-aecb-ee561a7c278b" message="#[payload]"/>
+	</flow>
+</mule>
