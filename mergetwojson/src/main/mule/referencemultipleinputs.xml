@@ -76,10 +76,10 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
 
 		<set-variable value="{
-  'USD': [
-    {'currency': 'EUR', 'ratio':0.92},
-    {'currency': 'ARS', 'ratio':8.76},
-    {'currency': 'GBP', 'ratio':0.66}
+  &quot;USD&quot;: [
+    {&quot;currency&quot;: &quot;EUR&quot;, &quot;ratio&quot;:0.92},
+    {&quot;currency&quot;: &quot;ARS&quot;, &quot;ratio&quot;:8.76},
+    {&quot;currency&quot;: &quot;GBP&quot;, &quot;ratio&quot;:0.66}
   ]
 }" doc:name="Set Variable" doc:id="be8538e1-d3ee-4fc8-a660-c4cf1dc7f380" variableName="exchangeRate2" mimeType="application/json"/>
 
@@ -89,19 +89,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/xml
-var exchangeRate = {
-  'USD': [
-    {'currency': 'EUR', 'ratio':0.92},
-    {'currency': 'ARS', 'ratio':8.76},
-    {'currency': 'GBP', 'ratio':0.66}
-  ]
-}
-
 ---
 books: {
   (payload filter ($.properties.year > 2005) map  (item)   ->  {
     book : {
-      (exchangeRate.USD map {
+      (vars.exchangeRate2.USD map {
         price @(currency: $.currency): $.ratio * item.price
       }),
       title: item.properties.title,
