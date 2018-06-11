@@ -1,0 +1,32 @@
+
+<root>
+    <correspondence>
+        <eventid> 123 </eventid>
+        <eventtype>letters</eventtype>
+        <name>Gopi</name>
+        <address> 123 Some St</address>
+    </correspondence>
+    <correspondence>
+        <eventid> 234 </eventid>
+        <eventtype>letters</eventtype>
+        <name>Larry</name>
+        <address> 123 Some St</address>
+    </correspondence>
+</root>
+{
+ "root"": [
+ 	"correspondence":{
+ 		"event": "123",
+ 		"eventtype":"letters",
+ 		"name":"Gopi",
+ 		"address":"123 Some st"
+ 	},
+ 	 "correspondence":{
+ 		"event": "234",
+ 		"eventtype":"letters",
+ 		"name":"larry",
+ 		"address":"123 Some st"
+ 	}
+ ]
+ 
+}

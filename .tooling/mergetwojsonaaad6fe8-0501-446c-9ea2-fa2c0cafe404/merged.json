@@ -1,0 +1,8 @@
+{
+"roots":{
+		"correspondence":[
+			{"event": "123", "eventtype":"letters","name":"Gopi",	"address":"123 Some st"},
+			{"event": "234", "eventtype":"letters","name":"Gopi",	"address":"123 Some st"}
+		]
+	}
+}

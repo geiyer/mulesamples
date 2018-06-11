@@ -1,0 +1,10 @@
+[
+    {
+        "eventid":"123",
+        "eventtype":"letters"
+    },
+       {
+        "eventid":"234",
+        "eventtype":"letters"
+    }
+]

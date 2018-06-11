@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="706c1728-22e6-41c4-940f-a85b941500c4" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="referencemultipleinputsFlow" doc:id="287b16b0-3a48-4e14-a020-8c1d50d05388" >
+		<http:listener doc:name="Listener" doc:id="07d41bad-e4ee-42e7-b677-9860809b6237" config-ref="HTTP_Listener_config" path="/merge"/>
+		<set-payload value="[
+  {
+      'type': 'book',
+      'price': 30,
+      'properties': {
+        'title': 'Everyday Italian',
+        'author': [
+          'Giada De Laurentiis'
+        ],
+        'year': 2005
+      }
+  },
+  {
+      'type': 'book',
+      'price': 29.99,
+      'properties': {
+        'title': 'Harry Potter',
+        'author': [
+          'J K. Rowling'
+        ],
+        'year': 2005
+      }
+  },
+  {
+      'type': 'book',
+      'price': 41.12,
+      'properties': {
+        'title': 'Mule in Action',
+        'author': [
+          'David Dossot',
+          'John D'Emic'
+        ],
+        'year': 2009
+      }
+  },
+  {
+      'type': 'book',
+      'price': 49.99,
+      'properties': {
+        'title': 'XQuery Kick Start',
+        'author': [
+          'James McGovern',
+          'Per Bothner',
+          'Kurt Cagle',
+          'James Linn',
+          'Kurt Cagle',
+          'Vaidyanathan Nagarajan'
+        ],
+        'year': 2003
+      }
+  },
+  {
+      'type': 'book',
+      'price': 39.95,
+      'properties': {
+        'title': 'Learning XML',
+        'author': [
+          'Erik T. Ray'
+        ],
+        'year': 2003
+      }
+  }
+]" doc:name="Set Payload" doc:id="3a1d68d7-7817-43d9-ad3b-77c39b2d668b" />
+		<set-variable value="{
+  'USD': [
+    {'currency': 'EUR', 'ratio':0.92},
+    {'currency': 'ARS', 'ratio':8.76},
+    {'currency': 'GBP', 'ratio':0.66}
+  ]
+}" doc:name="Set Variable" doc:id="be8538e1-d3ee-4fc8-a660-c4cf1dc7f380" variableName="exchangeRate" mimeType="application/json"/>
+
+		<logger level="INFO" doc:name="Logger - Payload" doc:id="d1050bcf-14f1-4f26-b75f-8ab77ad87696" message="#[payload]"/>
+		<logger level="INFO" doc:name="Logger-Variable" doc:id="d4c6bf97-6633-43a4-a3a6-d4aeb723fe6e" message="#[vars.exchangeRate]"/>
+		<ee:transform doc:name="Transform Message" doc:id="b7ab597d-a353-415b-8d83-fa1b83c33c82" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+books: {
+  (payload filter ($.properties.year > 2005) map  (item)   ->  {
+    book @(year: item.properties.year): {
+      (#[vars.exchangeRate].USD map {
+        price @(currency: $.currency): $.ratio * item.price
+      }),
+      title: item.properties.title,
+      authors: { (item.properties.author map {
+        author: $
+      }) }
+    }
+  } )
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="af14724f-e72c-4f4d-93c9-66415d6e7c06" message="#[payload]"/>
+	</flow>
+</mule>

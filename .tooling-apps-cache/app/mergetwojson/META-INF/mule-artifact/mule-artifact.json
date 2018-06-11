@@ -1,0 +1,28 @@
+{
+  "configs": [
+    "referencemultipleinputs.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "mergetwojson",
+  "minMuleVersion": "4.1.1",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedResources": [
+        "application-types.xml",
+        "books.JSON",
+        "log4j2.xml",
+        "merged.json",
+        "merged.xml",
+        "payload1.JSON",
+        "payload2.JSON"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}

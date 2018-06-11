@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f92903e7-982a-4a42-b341-1af00240d1ec" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="6870e1ab-7cd8-41ae-acf2-befcba4caba2" />
+	<flow name="mergetwojsonFlow" doc:id="b6f5203a-98ea-46c4-b9de-7ac8a24082cb" >
+		<http:listener doc:name="Listener" doc:id="c6b763c5-8eed-421b-a9b9-e60e28d97694" config-ref="HTTP_Listener_config" path="/merge"/>
+		<file:read doc:name="Read Payload 1" doc:id="a1759953-f255-4964-9abc-875b08e6d6c0" config-ref="File_Config" path="payload1.JSON"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1c4d42d5-1cf2-428b-b6e5-db1f62d17035" message="#[payload]"/>
+	</flow>
+</mule>
