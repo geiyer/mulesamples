@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e3ae83d4-128e-4246-bdd6-381f73614b3f" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="mergeeventandpayloadFlow" doc:id="9f3ce5f0-8b55-401e-a4a2-5afaa906f2ec" >
+		<http:listener doc:name="Listener" doc:id="4e1eb662-b913-482b-a2bd-66212388ac6d" config-ref="HTTP_Listener_config" path="/merge"/>
+		<file:read doc:name="Read" doc:id="312e5821-a1a9-40f3-be48-a606a985ce5e" path="C:\Users\E71849\Documents\Learning\mulesoft\AnyPointStudio\4.0\workspace\mulesamples\mergeeventandpayload\Data\sample_payload.json"/>
+		<logger level="INFO" doc:name="Logger" doc:id="48d6599f-43e1-40ee-b682-e7ec8953cf1c" />
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="68f50a92-1cda-4917-855d-eedc074cc8f9" variableName="eventDetails"/>
+		<file:read doc:name="Read" doc:id="a95c279a-aba7-490f-b7c5-d45c75cdefea" path="C:\Users\E71849\Documents\Learning\mulesoft\AnyPointStudio\4.0\workspace\mulesamples\mergeeventandpayload\Data\sample_events.json"/>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="3cd1c8b3-35fb-4627-8bf3-71400cc5151c" variableName="events"/>
+		<logger level="INFO" doc:name="Logger" doc:id="63931e23-6938-4c5e-a89a-2da5bff2b8a0" />
+		<ee:transform doc:name="Transform Message" doc:id="4f535d49-02fd-438c-afce-8a9f2d4b3e41" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	
+		(vars.events map(event) -> {
+		event_id: event.event_id,
+		current_status: event.current_status,
+		(vars.eventDetails filter(event.event_key.source_key == $.payload_key) map(details) -> {
+			PolicyID: details.PolicyID,
+			beneficiary_address_line_1: details.beneficiary_address_line_1,
+			payouttype: details.payouttype,
+			event_key: details.payload_key
+		})
+	})
+	
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

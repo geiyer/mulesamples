@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="eventdetails" format="json">
+      <types:example format="json" location="examples/sample_payload.json"/>
+    </types:type>
+    <types:type name="events" format="json">
+      <types:example format="json" location="examples/sample_events.json"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#4f535d49-02fd-438c-afce-8a9f2d4b3e41">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:variables>
+          <types:variable name="payload" type="events"/>
+          <types:variable name="events" type="eventdetails"/>
+        </types:variables>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
