@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="706c1728-22e6-41c4-940f-a85b941500c4" >
 		<http:listener-connection host="localhost" port="8081" />
 	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="e5fe9f0b-59dc-4328-9791-0ac3c4745543" >
+		<file:connection workingDir="C:\Users\E71849\Documents\Learning\mulesoft\AnyPointStudio\4.0\workspace\mulesamples\mergeeventandpayload\Data" />
+	</file:config>
 	<flow name="referencemultipleinputsFlow" doc:id="287b16b0-3a48-4e14-a020-8c1d50d05388" >
 		<http:listener doc:name="Listener" doc:id="07d41bad-e4ee-42e7-b677-9860809b6237" config-ref="HTTP_Listener_config" path="/merge"/>
+		<file:read doc:name="Read" doc:id="8ae3c9c9-4e69-463a-9d00-f555b1760b2b" config-ref="File_Config" path="C:\Users\E71849\Documents\Learning\mulesoft\AnyPointStudio\4.0\workspace\mulesamples\mergeeventandpayload\Data\sample_payload.json"/>
 		<set-payload value="[
   {
       &quot;type&quot;: &quot;book&quot;,
@@ -75,13 +80,13 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 ]" doc:name="Set Payload" doc:id="3a1d68d7-7817-43d9-ad3b-77c39b2d668b" mimeType="application/json"/>
 
 
-		<set-variable value="{
-  &quot;USD&quot;: [
-    {&quot;currency&quot;: &quot;EUR&quot;, &quot;ratio&quot;:0.92},
-    {&quot;currency&quot;: &quot;ARS&quot;, &quot;ratio&quot;:8.76},
-    {&quot;currency&quot;: &quot;GBP&quot;, &quot;ratio&quot;:0.66}
+		<set-variable value='{
+  "USD": [
+    {"currency": "EUR", "ratio":0.92},
+    {"currency": "ARS", "ratio":8.76},
+    {"currency": "GBP", "ratio":0.66}
   ]
-}" doc:name="Set Variable" doc:id="be8538e1-d3ee-4fc8-a660-c4cf1dc7f380" variableName="exchangeRate2" mimeType="application/json"/>
+}' doc:name="Set Variable" doc:id="be8538e1-d3ee-4fc8-a660-c4cf1dc7f380" variableName="exchangeRate2" mimeType="application/json"/>
 
 		<logger level="INFO" doc:name="Logger - Payload" doc:id="d1050bcf-14f1-4f26-b75f-8ab77ad87696" message="#[payload]"/>
 		<logger level="INFO" doc:name="Logger-Variable" doc:id="d4c6bf97-6633-43a4-a3a6-d4aeb723fe6e" message="#[vars.exchangeRate]"/>

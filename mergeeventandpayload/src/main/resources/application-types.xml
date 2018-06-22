@@ -1,6 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
   <types:catalog>
+    <types:type name="eventsoutput" format="json">
+      <types:example format="json" location="examples/sample_events-1.json"/>
+    </types:type>
     <types:type name="eventdetails" format="json">
       <types:example format="json" location="examples/sample_payload.json"/>
     </types:type>
