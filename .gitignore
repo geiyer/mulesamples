@@ -11,3 +11,6 @@ local.properties
 .project
 .classpath
 
+/mergeeventandpayload/src/main/resources/examples/sample_payload.json
+/mergeeventandpayload/src/main/resources/examples/sample_events.json
+/.metadata/

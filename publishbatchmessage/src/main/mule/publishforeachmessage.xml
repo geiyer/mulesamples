@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<flow name="publishforeachmessageFlow" doc:id="03a75fd8-c9ce-4e7b-aacc-5b3ebd0b3fb8" >
+		<http:listener doc:name="Listener" doc:id="83b0e589-1ae6-45d5-88e1-7638b69ccd56" config-ref="HTTP_Listener_config" path="foreach"/>
+		<foreach doc:name="For Each" doc:id="0481c1af-3c7b-44c8-9754-8dbcbd3cab1b" >
+			<logger level="INFO" doc:name="Logger" doc:id="b3bbd501-25d7-476b-9978-e7f5c5ef5d9b" message="#[payload]"/>
+			<jms:publish doc:name="Publish" doc:id="502bec45-2ee4-4dd6-a13b-cd922b8ff079" config-ref="JMS_Config" destination="ForEach" />
+		</foreach>
+	</flow>
+</mule>

@@ -1,0 +1,21 @@
+{
+  "configs": [
+    "publishbatchmessage.xml",
+    "publishforeachmessage.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "publishbatchmessage",
+  "minMuleVersion": "4.1.1",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedResources": []
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}

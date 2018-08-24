@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="dd9b8cc4-0873-4583-bebb-edb015ccea7b" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="10dc63d6-5646-4145-9211-471222e30d0d" >
+		<jms:active-mq-connection username="admin" password="admin">
+			<jms:caching-strategy >
+				<jms:default-caching />
+			</jms:caching-strategy>
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+		<jms:consumer-config >
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:consumer-config>
+	</jms:config>
+	<flow name="publishbatchmessageFlow" doc:id="9489401e-5652-405f-99a4-56af78c31f9c" >
+		<http:listener doc:name="Listener" doc:id="9eaea897-fe85-4fc1-a6ec-ef34cb67ab46" config-ref="HTTP_Listener_config" path="/messages"/>
+		<logger level="INFO" doc:name="Invoke Batch Service" doc:id="eb2943fb-c445-428c-a6dc-b78d9351d0d9" message="#[payload]"/>
+		<batch:job jobName="publishbatchmessageBatch_Job" doc:id="9dced40e-d96b-48f3-b30a-7396db348702" blockSize="10">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="3794265f-fd9b-418e-a7b0-dd69cdcfd143" >
+					<try doc:name="Try" doc:id="8a10e14e-53f2-49ba-8e79-92ab17ad2e6e" >
+						<logger level="DEBUG" doc:name="Invoke Event Service" doc:id="f1037dd1-ba93-4f6e-958a-41f2cb1e0c80" message="#[payload]" />
+						<jms:publish doc:name="Publish" doc:id="957408b0-a12d-4c2d-afab-cadeea3e9741" config-ref="JMS_Config" destination="batchqueue" />
+						<logger level="INFO" doc:name="Save to Batch Results" doc:id="2f0503ab-1a68-4d5f-a295-d3c2cae742af" />
+						<error-handler >
+							<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="34266be3-8c05-4d38-b4ff-dcaca405b607" >
+								<logger level="INFO" doc:name="Save to Batch Results" doc:id="bb8ebbc8-bcf6-444b-b51d-b6760197fd3b" />
+							</on-error-continue>
+						</error-handler>
+					</try>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="Save" doc:id="dfd5f9b9-e677-4b5a-b764-150b838e53ee" message="Batch Process is now complete"/>
+			</batch:on-complete>
+		</batch:job>
+		<logger level="INFO" doc:name="Send Batch ID Response" doc:id="acbacdd6-7d83-4574-a16c-be19b7534d09" message="Respond to Client"/>
+		<set-payload value="OK" doc:name="Set Payload" doc:id="1e046128-3148-4151-85a8-72ca5cd0bace" />
+	</flow>
+</mule>
