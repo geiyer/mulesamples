@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="0728f0c2-01a1-4c6b-97e4-1efcccdcddd5" >
+		<jms:active-mq-connection username="admin" password="admin" specification="JMS_2_0">
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+		<jms:consumer-config >
+			<jms:consumer-type >
+				<jms:topic-consumer />
+			</jms:consumer-type>
+		</jms:consumer-config>
+	</jms:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="cd3c3867-0828-48aa-9f16-18deaf954feb" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="sharedsubscriptionFlow" doc:id="72871344-7a94-49ac-9490-b94c44f67d75" >
+		<jms:listener doc:name="Listener" doc:id="34782086-a5e3-4203-89dd-b75fdace8382" config-ref="JMS_Config" destination="sharedsubscription" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:topic-consumer shared="true" subscriptionName="clustersubscription" />
+			</jms:consumer-type>
+
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="26340f27-9650-48ec-869c-c8b69d071dbe" message="#[payload]"/>
+	</flow>
+	<flow name="sharedsubscriptionFlow1" doc:id="61c8e76f-eac1-475f-a81f-95cb7394d9ed" >
+		<http:listener doc:name="Listener" doc:id="cef55908-0d50-4452-a586-d4a6444c80ca" config-ref="HTTP_Listener_config" path="/api"/>
+	</flow>
+</mule>
